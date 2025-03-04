@@ -41,7 +41,7 @@ def response(
     response_text = (
         groq_client.chat.completions.create(
             model="llama-3.1-8b-instant",
-            max_tokens=512,
+            max_tokens=200,
             messages=messages,  # type: ignore
         )
         .choices[0]
@@ -49,6 +49,7 @@ def response(
     )
 
     chatbot.append({"role": "assistant", "content": response_text})
+    yield AdditionalOutputs(chatbot)
 
     for chunk in tts_client.text_to_speech.convert_as_stream(
         text=response_text,  # type: ignore
@@ -58,7 +59,6 @@ def response(
     ):
         audio_array = np.frombuffer(chunk, dtype=np.int16).reshape(1, -1)
         yield (24000, audio_array)
-    yield AdditionalOutputs(chatbot)
 
 
 chatbot = gr.Chatbot(type="messages")
