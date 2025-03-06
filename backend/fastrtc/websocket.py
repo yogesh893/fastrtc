@@ -55,7 +55,7 @@ class WebSocketHandler:
         ],
     ):
         self.stream_handler = stream_handler
-        self.stream_handler._clear_queue = lambda: None
+        self.stream_handler._clear_queue = self._clear_queue
         self.websocket: Optional[WebSocket] = None
         self._emit_task: Optional[asyncio.Task] = None
         self.stream_id: Optional[str] = None
@@ -64,6 +64,20 @@ class WebSocketHandler:
         self.set_handler = set_handler
         self.quit = asyncio.Event()
         self.clean_up = clean_up
+        self.queue = asyncio.Queue()
+
+    def _clear_queue(self):
+        old_queue = self.queue
+        self.queue = asyncio.Queue()
+        logger.debug("clearing queue")
+        i = 0
+        while not old_queue.empty():
+            try:
+                old_queue.get_nowait()
+                i += 1
+            except asyncio.QueueEmpty:
+                break
+        logger.debug("popped %d items from queue", i)
 
     def set_args(self, args: list[Any]):
         self.stream_handler.set_args(args)
@@ -77,6 +91,7 @@ class WebSocketHandler:
         self.stream_handler._loop = loop
         self.stream_handler.set_channel(self.data_channel)
         self._emit_task = asyncio.create_task(self._emit_loop())
+        self._emit_to_queue_task = asyncio.create_task(self._emit_to_queue())
         if isinstance(self.stream_handler, AsyncStreamHandler):
             start_up = self.stream_handler.start_up()
         else:
@@ -137,17 +152,32 @@ class WebSocketHandler:
         finally:
             if self._emit_task:
                 self._emit_task.cancel()
+            if self._emit_to_queue_task:
+                self._emit_to_queue_task.cancel()
             if self.start_up_task:
                 self.start_up_task.cancel()
             await websocket.close()
 
-    async def _emit_loop(self):
+    async def _emit_to_queue(self):
         try:
             while not self.quit.is_set():
                 if isinstance(self.stream_handler, AsyncStreamHandler):
                     output = await self.stream_handler.emit()
                 else:
                     output = await run_sync(self.stream_handler.emit)
+                self.queue.put_nowait(output)
+        except asyncio.CancelledError:
+            logger.debug("Emit loop cancelled")
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            logger.debug("Error in emit loop: %s", e)
+
+    async def _emit_loop(self):
+        try:
+            while not self.quit.is_set():
+                output = await self.queue.get()
 
                 if output is not None:
                     frame, output = split_output(output)
