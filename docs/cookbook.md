@@ -20,20 +20,21 @@ A collection of applications built with FastRTC. Click on the tags below to find
 
 
 <div class="tag-buttons">
-  <button class="tag-button" data-tag="audio"><code>audio</code></button>
-  <button class="tag-button" data-tag="video"><code>video</code></button>
-  <button class="tag-button" data-tag="llm"><code>llm</code></button>
-  <button class="tag-button" data-tag="computer-vision"><code>computer-vision</code></button>
-  <button class="tag-button" data-tag="real-time-api"><code>real-time-api</code></button>
-  <button class="tag-button" data-tag="voice-chat"><code>voice chat</code></button>
-  <button class="tag-button" data-tag="code-generation"><code>code generation</code></button>
-  <button class="tag-button" data-tag="stopword"><code>stopword</code></button>
-  <button class="tag-button" data-tag="transcription"><code>transcription</code></button>
+  <button class="tag-button" data-tag="audio"><code>Audio</code></button>
+  <button class="tag-button" data-tag="video"><code>Video</code></button>
+  <button class="tag-button" data-tag="llm"><code>LLM</code></button>
+  <button class="tag-button" data-tag="computer-vision"><code>Computer Vision</code></button>
+  <button class="tag-button" data-tag="real-time-api"><code>Real-time API</code></button>
+  <button class="tag-button" data-tag="voice-chat"><code>Voice Chat</code></button>
+  <button class="tag-button" data-tag="code-generation"><code>Code Generation</code></button>
+  <button class="tag-button" data-tag="stopword"><code>Stopword</code></button>
+  <button class="tag-button" data-tag="transcription"><code>Transcription</code></button>
   <button class="tag-button" data-tag="sambanova"><code>SambaNova</code></button>
   <button class="tag-button" data-tag="groq"><code>Groq</code></button>
   <button class="tag-button" data-tag="elevenlabs"><code>ElevenLabs</code></button>
-  <button class="tag-button" data-tag="elevenlabs"><code>Kyutai</code></button>
+  <button class="tag-button" data-tag="kyutai"><code>Kyutai</code></button>
   <button class="tag-button" data-tag="agentic"><code>Agentic</code></button>
+  <button class="tag-button" data-tag="local"><code>Local Models</code></button>
 </div>
 
 <script>
@@ -321,6 +322,14 @@ document.querySelectorAll('.tag-button').forEach(button => {
 
     [:octicons-code-16: Code](https://huggingface.co/spaces/freddyaboulton/parler-tts-streaming-webrtc/blob/main/app.py)
 
+-   :speaking_head:{ .lg .middle } __Real Time Transcription with On-device Whisper 🤗__
+{: data-tags="audio,transcription,local"}
+
+    ---
+
+    Transcribe speech in real time using Whisper via the Transformers library, running on your device!
+
+    [:octicons-code-16: Code](https://github.com/sofi444/realtime-transcription-fastrtc/blob/main/main.py)
 
     -   :speaking_head:{ .lg .middle } __Talk to Claude - Electron App__
 {: data-tags="audio,electron"}
