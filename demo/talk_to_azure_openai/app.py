@@ -2,11 +2,10 @@ import asyncio
 import base64
 import json
 from pathlib import Path
-import sounddevice as sd
 
+import aiohttp  # pip install aiohttp
 import gradio as gr
 import numpy as np
-import aiohttp  # pip install aiohttp
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, StreamingResponse

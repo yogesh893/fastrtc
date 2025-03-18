@@ -86,7 +86,7 @@ from fastrtc import get_tts_model, Stream, ReplyOnPause
 tts_client = get_tts_model()
 
 
-def detection(audio: tuple[int, np.ndarray]):
+def echo(audio: tuple[int, np.ndarray]):
     # Implement any iterator that yields audio
     # See "LLM Voice Chat" for a more complete example
     yield audio
@@ -98,7 +98,7 @@ def startup():
 
 
 stream = Stream(
-    handler=ReplyOnPause(detection, startup_fn=startup),
+    handler=ReplyOnPause(echo, startup_fn=startup),
     modality="audio",
     mode="send-receive",
     ui_args={"title": "Echo Audio"},
