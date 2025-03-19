@@ -81,13 +81,17 @@ class Stream(WebRTCConnectionMixin):
         self._ui = self._generate_default_ui(ui_args)
         self._ui.launch = self._wrap_gradio_launch(self._ui.launch)
 
-    def mount(self, app: FastAPI):
-        app.router.post("/webrtc/offer")(self.offer)
-        app.router.websocket("/telephone/handler")(self.telephone_handler)
-        app.router.post("/telephone/incoming")(self.handle_incoming_call)
-        app.router.websocket("/websocket/offer")(self.websocket_offer)
+    def mount(self, app: FastAPI, path: str = ""):
+        from fastapi import APIRouter
+
+        router = APIRouter(prefix=path)
+        router.post("/webrtc/offer")(self.offer)
+        router.websocket("/telephone/handler")(self.telephone_handler)
+        router.post("/telephone/incoming")(self.handle_incoming_call)
+        router.websocket("/websocket/offer")(self.websocket_offer)
         lifespan = self._inject_startup_message(app.router.lifespan_context)
         app.router.lifespan_context = lifespan
+        app.include_router(router)
 
     @staticmethod
     def print_error(env: Literal["colab", "spaces"]):
