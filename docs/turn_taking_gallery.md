@@ -17,7 +17,7 @@
 A collection of Turn Taking Algorithms and Voice Activity Detection (VAD) models ready to use with FastRTC. Click on the tags below to find the model you're looking for!
 
 <div class="tag-buttons">
-  <button class="tag-button" data-tag="vad-models"><code>VAD Model</code></button>
+  <button class="tag-button" data-tag="vad-model"><code>VAD Model</code></button>
   <button class="tag-button" data-tag="turn-taking-algorithm"><code>Turn-taking Algorithm</code></button>
 </div>
 
@@ -46,7 +46,7 @@ document.querySelectorAll('.tag-button').forEach(button => {
 <div class="grid cards" markdown>
 
 -   :speaking_head:{ .lg .middle }:eyes:{ .lg .middle } __HumAware VAD__
-{: data-tags="vad-models"}
+{: data-tags="vad-model"}
 
     ---
 
@@ -71,10 +71,6 @@ document.querySelectorAll('.tag-button').forEach(button => {
     [:octicons-arrow-right-24: Demo](https://github.com/CuriousMonkey7/HumAwareVad/blob/main/app.py)  
 
     [:octicons-code-16: Repository](https://github.com/CuriousMonkey7/HumAwareVad/blob/main/humaware_vad/__init__.py)  
-
-
-</div>
-<div class="grid cards" markdown>
 
 -   :speaking_head:{ .lg .middle }:eyes:{ .lg .middle } __Walkie Talkie__
 {: data-tags="turn-taking-algorithm"}
