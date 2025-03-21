@@ -46,6 +46,11 @@ class UIArgs(TypedDict):
     """Color of the pulse animation. Default is var(--color-accent) of the demo theme."""
     icon_radius: NotRequired[int]
     """Border radius of the icon button expressed as a percentage of the button size. Default is 50%."""
+    send_input_on: NotRequired[Literal["submit", "change"]]
+    """When to send the input to the handler. Default is "change".
+    If "submit", the input will be sent when the submit event is triggered by the user.
+    If "change", the input will be sent whenever the user changes the input value.
+    """
 
 
 class Stream(WebRTCConnectionMixin):
@@ -229,6 +234,7 @@ class Stream(WebRTCConnectionMixin):
                     trigger=button.click,
                     time_limit=self.time_limit,
                     concurrency_limit=self.concurrency_limit,  # type: ignore
+                    send_input_on=ui_args.get("send_input_on", "change"),
                 )
                 if additional_output_components:
                     assert self.additional_outputs_handler
@@ -275,6 +281,7 @@ class Stream(WebRTCConnectionMixin):
                     outputs=[output_video],
                     time_limit=self.time_limit,
                     concurrency_limit=self.concurrency_limit,  # type: ignore
+                    send_input_on=ui_args.get("send_input_on", "change"),
                 )
                 if additional_output_components:
                     assert self.additional_outputs_handler
@@ -325,6 +332,7 @@ class Stream(WebRTCConnectionMixin):
                     outputs=[image],
                     time_limit=self.time_limit,
                     concurrency_limit=self.concurrency_limit,  # type: ignore
+                    send_input_on=ui_args.get("send_input_on", "change"),
                 )
                 if additional_output_components:
                     assert self.additional_outputs_handler
@@ -377,6 +385,7 @@ class Stream(WebRTCConnectionMixin):
                     trigger=button.click,
                     time_limit=self.time_limit,
                     concurrency_limit=self.concurrency_limit,  # type: ignore
+                    send_input_on=ui_args.get("send_input_on", "change"),
                 )
                 if additional_output_components:
                     assert self.additional_outputs_handler
@@ -428,6 +437,7 @@ class Stream(WebRTCConnectionMixin):
                     outputs=[image],
                     time_limit=self.time_limit,
                     concurrency_limit=self.concurrency_limit,  # type: ignore
+                    send_input_on=ui_args.get("send_input_on", "change"),
                 )
                 if additional_output_components:
                     assert self.additional_outputs_handler
@@ -480,6 +490,7 @@ class Stream(WebRTCConnectionMixin):
                         outputs=[image],
                         time_limit=self.time_limit,
                         concurrency_limit=self.concurrency_limit,  # type: ignore
+                        send_input_on=ui_args.get("send_input_on", "change"),
                     )
                     if additional_output_components:
                         assert self.additional_outputs_handler
@@ -489,7 +500,9 @@ class Stream(WebRTCConnectionMixin):
                             outputs=additional_output_components,
                         )
         elif self.modality == "audio-video" and self.mode == "send-receive":
-            with gr.Blocks() as demo:
+            css = """.my-group {max-width: 600px !important; max-height: 600 !important;}
+            .my-column {display: flex !important; justify-content: center !important; align-items: center !important};"""
+            with gr.Blocks(css=css) as demo:
                 gr.HTML(
                     f"""
                 <h1 style='text-align: center'>
@@ -506,8 +519,8 @@ class Stream(WebRTCConnectionMixin):
                 """
                     )
                 with gr.Row():
-                    with gr.Column():
-                        with gr.Group():
+                    with gr.Column(elem_classes=["my-column"]):
+                        with gr.Group(elem_classes=["my-group"]):
                             image = WebRTC(
                                 label="Stream",
                                 rtc_configuration=self.rtc_configuration,
@@ -532,6 +545,7 @@ class Stream(WebRTCConnectionMixin):
                         outputs=[image],
                         time_limit=self.time_limit,
                         concurrency_limit=self.concurrency_limit,  # type: ignore
+                        send_input_on=ui_args.get("send_input_on", "change"),
                     )
                     if additional_output_components:
                         assert self.additional_outputs_handler
