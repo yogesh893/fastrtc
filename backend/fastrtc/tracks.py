@@ -190,7 +190,6 @@ class VideoCallback(VideoStreamTrack):
                 pts, time_base = await self.next_timestamp()
                 new_frame.pts = pts
                 new_frame.time_base = time_base
-            self.function_running = False
             return new_frame
         except Exception as e:
             logger.debug("exception %s", e)
