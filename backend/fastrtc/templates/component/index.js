@@ -17747,16 +17747,13 @@ function R6(n, e, t = () => {
 }
 async function L6(n, e, t, r = () => {
 }) {
-  return n.createOffer().then((a) => n.setLocalDescription(a)).then(() => new Promise((a) => {
-    if (console.debug("ice gathering state", n.iceGatheringState), n.iceGatheringState === "complete")
-      a();
-    else {
-      const i = () => {
-        n.iceGatheringState === "complete" && (console.debug("ice complete"), n.removeEventListener("icegatheringstatechange", i), a());
-      };
-      n.addEventListener("icegatheringstatechange", i);
-    }
-  })).then(() => {
+  return n.onicecandidate = ({ candidate: a }) => {
+    a && (console.debug("Sending ICE candidate", a), e({
+      candidate: a.toJSON(),
+      webrtc_id: t,
+      type: "ice-candidate"
+    }).catch((i) => console.error("Error sending ICE candidate:", i)));
+  }, n.createOffer().then((a) => n.setLocalDescription(a)).then(() => {
     var a = n.localDescription;
     return R6(
       e,

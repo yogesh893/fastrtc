@@ -5,6 +5,7 @@ from typing import (
     AsyncContextManager,
     Callable,
     Literal,
+    Optional,
     TypedDict,
     cast,
 )
@@ -28,7 +29,8 @@ curr_dir = Path(__file__).parent
 
 
 class Body(BaseModel):
-    sdp: str
+    sdp: Optional[str] = None
+    candidate: Optional[dict[str, Any]] = None
     type: str
     webrtc_id: str
 

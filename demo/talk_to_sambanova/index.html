@@ -357,19 +357,20 @@
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
 
-                await new Promise((resolve) => {
-                    if (peerConnection.iceGatheringState === "complete") {
-                        resolve();
-                    } else {
-                        const checkState = () => {
-                            if (peerConnection.iceGatheringState === "complete") {
-                                peerConnection.removeEventListener("icegatheringstatechange", checkState);
-                                resolve();
-                            }
-                        };
-                        peerConnection.addEventListener("icegatheringstatechange", checkState);
+                peerConnection.onicecandidate = ({ candidate }) => {
+                    if (candidate) {
+                        console.debug("Sending ICE candidate", candidate);
+                        fetch('/webrtc/offer', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                candidate: candidate.toJSON(),
+                                webrtc_id: webrtc_id,
+                                type: "ice-candidate",
+                            })
+                        })
                     }
-                });
+                };
 
                 peerConnection.addEventListener('connectionstatechange', () => {
                     console.log('connectionstatechange', peerConnection.connectionState);
