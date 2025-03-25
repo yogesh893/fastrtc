@@ -233,6 +233,7 @@ class WebRTC(Component, WebRTCConnectionMixin):
             inputs = list(inputs)
 
         async def handler(webrtc_id: str, *args):
+            print("webrtc_id", webrtc_id)
             async for next_outputs in self.output_stream(webrtc_id):
                 yield fn(*args, *next_outputs.args)  # type: ignore
 

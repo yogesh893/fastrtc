@@ -75,7 +75,7 @@ class WebRTCConnectionMixin:
         self.handlers = {}
         self.connection_timeouts = defaultdict(asyncio.Event)
         # These attributes should be set by subclasses:
-        self.concurrency_limit: int | float | None
+        self.concurrency_limit: int | None
         self.event_handler: HandlerType | None
         self.time_limit: float | None
         self.modality: Literal["video", "audio", "audio-video"]

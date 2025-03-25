@@ -77,8 +77,11 @@ class Stream(WebRTCConnectionMixin):
         self.rtp_params = rtp_params
         self.event_handler = handler
         self.concurrency_limit = cast(
-            (int | float),
+            (int),
             1 if concurrency_limit in ["default", None] else concurrency_limit,
+        )
+        self.concurrency_limit_gradio = cast(
+            int | Literal["default"] | None, concurrency_limit
         )
         self.time_limit = time_limit
         self.additional_output_components = additional_outputs
@@ -242,6 +245,7 @@ class Stream(WebRTCConnectionMixin):
                     assert self.additional_outputs_handler
                     output_video.on_additional_outputs(
                         self.additional_outputs_handler,
+                        concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                         inputs=additional_output_components,
                         outputs=additional_output_components,
                     )
@@ -289,6 +293,7 @@ class Stream(WebRTCConnectionMixin):
                     assert self.additional_outputs_handler
                     output_video.on_additional_outputs(
                         self.additional_outputs_handler,
+                        concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                         inputs=additional_output_components,
                         outputs=additional_output_components,
                     )
@@ -342,6 +347,7 @@ class Stream(WebRTCConnectionMixin):
                         self.additional_outputs_handler,
                         inputs=additional_output_components,
                         outputs=additional_output_components,
+                        concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                     )
         elif self.modality == "audio" and self.mode == "receive":
             with gr.Blocks() as demo:
@@ -395,6 +401,7 @@ class Stream(WebRTCConnectionMixin):
                         self.additional_outputs_handler,
                         inputs=additional_output_components,
                         outputs=additional_output_components,
+                        concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                     )
         elif self.modality == "audio" and self.mode == "send":
             with gr.Blocks() as demo:
@@ -447,6 +454,7 @@ class Stream(WebRTCConnectionMixin):
                         self.additional_outputs_handler,
                         inputs=additional_output_components,
                         outputs=additional_output_components,
+                        concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                     )
         elif self.modality == "audio" and self.mode == "send-receive":
             with gr.Blocks() as demo:
@@ -500,6 +508,7 @@ class Stream(WebRTCConnectionMixin):
                             self.additional_outputs_handler,
                             inputs=additional_output_components,
                             outputs=additional_output_components,
+                            concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                         )
         elif self.modality == "audio-video" and self.mode == "send-receive":
             css = """.my-group {max-width: 600px !important; max-height: 600 !important;}
@@ -555,6 +564,7 @@ class Stream(WebRTCConnectionMixin):
                             self.additional_outputs_handler,
                             inputs=additional_output_components,
                             outputs=additional_output_components,
+                            concurrency_limit=self.concurrency_limit_gradio,  # type: ignore
                         )
         else:
             raise ValueError(f"Invalid modality: {self.modality} and mode: {self.mode}")
