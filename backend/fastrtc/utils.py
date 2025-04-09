@@ -7,7 +7,7 @@ import json
 import logging
 import tempfile
 import traceback
-from collections.abc import Callable
+from collections.abc import Callable, Coroutine
 from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol, TypedDict, cast
@@ -486,3 +486,15 @@ async def wait_for_item(queue: asyncio.Queue, timeout: float = 0.1) -> Any:
         return await asyncio.wait_for(queue.get(), timeout=timeout)
     except (TimeoutError, asyncio.TimeoutError):
         return None
+
+
+RTCConfigurationCallable = (
+    Callable[[], dict[str, Any]]
+    | Callable[[], Coroutine[dict[str, Any], Any, dict[str, Any]]]
+    | Callable[[str | None, str | None, str | None], dict[str, Any]]
+    | Callable[
+        [str | None, str | None, str | None],
+        Coroutine[dict[str, Any], Any, dict[str, Any]],
+    ]
+    | dict[str, Any]
+)
