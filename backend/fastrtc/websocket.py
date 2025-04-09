@@ -12,7 +12,14 @@ from fastapi import WebSocket
 from fastapi.websockets import WebSocketDisconnect, WebSocketState
 
 from .tracks import AsyncStreamHandler, StreamHandlerImpl
-from .utils import AdditionalOutputs, CloseStream, DataChannel, split_output
+from .utils import (
+    AdditionalOutputs,
+    CloseStream,
+    DataChannel,
+    audio_to_float32,
+    audio_to_int16,
+    split_output,
+)
 
 
 class WebSocketDataChannel(DataChannel):
@@ -31,14 +38,12 @@ def convert_to_mulaw(
     audio_data: np.ndarray, original_rate: int, target_rate: int
 ) -> bytes:
     """Convert audio data to 8kHz mu-law format"""
-
-    if audio_data.dtype != np.float32:
-        audio_data = audio_data.astype(np.float32) / 32768.0
+    audio_data = audio_to_float32(audio_data)
 
     if original_rate != target_rate:
         audio_data = librosa.resample(audio_data, orig_sr=original_rate, target_sr=8000)
 
-    audio_data = (audio_data * 32768).astype(np.int16)
+    audio_data = audio_to_int16(audio_data)
 
     return audioop.lin2ulaw(audio_data, 2)  # type: ignore
 
@@ -122,14 +127,13 @@ class WebSocketHandler:
                     )
 
                     if self.stream_handler.input_sample_rate != 8000:
-                        audio_array = audio_array.astype(np.float32) / 32768.0
+                        audio_array = audio_to_float32(audio_array)
                         audio_array = librosa.resample(
                             audio_array,
                             orig_sr=8000,
                             target_sr=self.stream_handler.input_sample_rate,
                         )
-                        audio_array = (audio_array * 32768).astype(np.int16)
-
+                        audio_array = audio_to_int16(audio_array)
                     try:
                         if isinstance(self.stream_handler, AsyncStreamHandler):
                             await self.stream_handler.receive(
