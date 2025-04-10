@@ -28,7 +28,6 @@ from fastrtc.tracks import (
     HandlerType,
     ServerToClientAudio,
     ServerToClientVideo,
-    StreamHandlerBase,
     StreamHandlerImpl,
     VideoCallback,
     VideoEventHandler,
@@ -257,7 +256,7 @@ class WebRTCConnectionMixin:
         pc = RTCPeerConnection()
         self.pcs[body["webrtc_id"]] = pc
 
-        if isinstance(self.event_handler, StreamHandlerBase):
+        if isinstance(self.event_handler, StreamHandlerImpl):
             handler = self.event_handler.copy()
             handler.emit = webrtc_error_handler(handler.emit)  # type: ignore
             handler.receive = webrtc_error_handler(handler.receive)  # type: ignore
